@@ -1,0 +1,2 @@
+ALTER TABLE MataKuliah RENAME TO Courses;
+ALTER TABLE Courses RENAME TO MataKuliah;
