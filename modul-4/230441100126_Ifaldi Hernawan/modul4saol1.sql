@@ -10,7 +10,6 @@ SELECT * FROM siswa;
 SELECT 
     siswa.nama AS nama_siswa,
     siswa.nisn,
-    nilai.semester,
     nilai.nilai_angka,
     nilai.nilai_huruf
 FROM 
@@ -23,7 +22,7 @@ SELECT * FROM siswa
 ORDER BY nama ASC;
 
 SELECT * FROM nilai
-ORDER BY semester ASC, nilai_angka DESC;
+ORDER BY nilai_huruf ASC, nilai_angka DESC;
 
 SELECT * FROM guru
 ORDER BY nip DESC, nama ASC;
@@ -59,7 +58,6 @@ SELECT *
 FROM nilai
 WHERE nilai_angka >= 75        -- Operator 1: lebih besar atau sama dengan
   AND nilai_angka <= 90        -- Operator 2: lebih kecil atau sama dengan
-  AND semester = 'Ganjil'      -- Operator 3: sama dengan
   AND id_siswa != 3            -- Operator 4: tidak sama dengan
   AND nilai_huruf <> 'C';      -- Operator 5: tidak sama dengan (bentuk lain)
 

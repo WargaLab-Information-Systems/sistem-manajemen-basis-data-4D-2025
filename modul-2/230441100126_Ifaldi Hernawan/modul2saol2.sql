@@ -5,7 +5,6 @@ SELECT
     s.nama AS nama_siswa,
     s.kelas,
     m.nama_mapel,
-    n.semester,
     n.nilai_angka,
     n.nilai_huruf
 FROM nilai n
@@ -29,8 +28,7 @@ SELECT
     s.nama AS nama_siswa,
     s.kelas,
     n.nilai_angka,
-    n.nilai_huruf,
-    n.semester
+    n.nilai_huruf
 FROM siswa s
 JOIN nilai n ON s.id_siswa = n.id_siswa
 WHERE n.nilai_angka < 75;
