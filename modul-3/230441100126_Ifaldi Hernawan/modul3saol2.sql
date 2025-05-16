@@ -17,23 +17,23 @@ DELIMITER ;
 
 SET @status = '';
 CALL UpdateDataMaster(1, 'XII IPs', @status);
-select @status;
-select * from siswa;
+SELECT @status;
+SELECT * FROM siswa;
 
 -- soal2
-delimiter//
-create procedure CountTransaksi(
-out total_transaksi int
+DELIMITER//
+CREATE PROCEDURE CountTransaksi(
+    OUT total_transaksi INT
 )
-begin
-select count(*) into total_transaksi
-from nilai;
-end//
-delimiter;
+BEGIN
+    SELECT COUNT(*) INTO total_transaksi
+    FROM nilai;
+END//
+DELIMITER;
 
-set @jumlah = 0;
-call CountTransaksi(@jumlah)
-select @jumlah;
+SET @jumlah = 0;
+CALL CountTransaksi(@jumlah);
+SELECT @jumlah;
 
 -- soal3
 DELIMITER //
@@ -63,7 +63,7 @@ CALL GetDataMasterByID(5, @nama, @nisn, @kelas, @alamat);
 
 -- Lihat hasilnya
 SELECT @nama, @nisn, @kelas, @alamat;
-select * from siswa;
+SELECT * FROM siswa;
 
 
 -- soal4
@@ -110,16 +110,16 @@ SELECT @angka AS nilai_angka_terakhir, @huruf AS nilai_huruf_terakhir;
 
 
 -- soal5
-delimiter//
-create procedure DeleteEntriesByIDMaster(
-in p_id int
+DELIMITER//
+CREATE PROCEDURE DeleteEntriesByIDMaster(
+    IN p_id INT
 )
-begin
-delete from siswa
-where Id_siswa = p_id;
-end//
-delimiter;
+BEGIN
+    DELETE FROM siswa
+    WHERE Id_siswa = p_id;
+END//
+DELIMITER;
 
-call DeleteEntriesByIDMaster(10);
-select * from siswa;
+CALL DeleteEntriesByIDMaster(60);
+SELECT * FROM siswa;
 

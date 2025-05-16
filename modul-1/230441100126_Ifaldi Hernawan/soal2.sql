@@ -1,3 +1,5 @@
+CREATE DATABASE db_sistem_manajemen_sekolah;
+
 USE db_sistem_manajemen_sekolah;
 
 CREATE TABLE siswa (
@@ -5,7 +7,8 @@ CREATE TABLE siswa (
     nama VARCHAR(100) NOT NULL,
     nisn VARCHAR(20) UNIQUE NOT NULL,
     kelas VARCHAR(10),
-    alamat TEXT
+    alamat TEXT,
+    keterangan TEXT
 );
 
 CREATE TABLE guru (
@@ -20,6 +23,7 @@ CREATE TABLE mapel (
     nama_mapel VARCHAR(100) NOT NULL,
     tingkat VARCHAR(10)
 );
+
 
 CREATE TABLE jadwal (
     id_jadwal INT AUTO_INCREMENT PRIMARY KEY,
@@ -44,32 +48,66 @@ CREATE TABLE nilai (
     FOREIGN KEY (id_mapel) REFERENCES mapel(id_mapel)
 );
 
+ALTER TABLE nilai ADD CONSTRAINT fk_nilai_matpel FOREIGN KEY (id_mapel) REFERENCES mapel(id_mapel);
+ALTER TABLE jadwal ADD CONSTRAINT fk_jadwal_matpel FOREIGN KEY (id_mapel) REFERENCES mapel(id_mapel);
+
 SELECT * FROM siswa;
 SELECT * FROM guru;
 SELECT * FROM mapel;
 SELECT * FROM jadwal;
 SELECT * FROM nilai;
 
-INSERT INTO siswa (id_siswa, nama, nisn, kelas, alamat)
-VALUES 
-(6, 'Salsabila Nur', '0006', 'XI IPA 1', 'Jl. Cemara No. 6'),
-(7, 'Rendi Maulana', '0007', 'XII IPA 2', 'Jl. Teratai No. 7'),
-(8, 'Nadya Karina', '0008', 'X IPS 1', 'Jl. Sawo No. 8'),
-(9, 'Galang Pradana', '0009', 'XI IPS 2', 'Jl. Merpati No. 9'),
-(10, 'Laras Anindya', '0010', 'X IPA 1', 'Jl. Flamboyan No. 10');
 
-INSERT INTO nilai (id_nilai, id_siswa, id_mapel, nilai_angka, nilai_huruf, semester)
-VALUES 
-(6, 6, 1, 65.00, 'D+', 'Genap'),
-(7, 7, 2, 70.00, 'C', 'Ganjil'),
-(8, 8, 3, 68.50, 'C', 'Genap'),
-(9, 9, 1, 73.00, 'C+', 'Genap'),
-(10, 10, 2, 62.50, 'D', 'Ganjil');
+-- Hapus constraint lama
+ALTER TABLE nilai DROP FOREIGN KEY nilai_ibfk_1;
 
-ALTER TABLE nilai DROP FOREIGN KEY fk_nl;
-
+-- Tambahkan constraint baru dengan ON DELETE CASCADE
 ALTER TABLE nilai
-ADD CONSTRAINT fk_nl
+ADD CONSTRAINT fk_nilai_siswa
 FOREIGN KEY (id_siswa) REFERENCES siswa(id_siswa)
 ON DELETE CASCADE;
+
+
+SELECT 
+    j.id_jadwal,
+    g.nama AS nama_guru,
+    m.nama_mapel,
+    j.kelas,
+    j.hari,
+    j.jam_mulai,
+    j.jam_selesai
+FROM jadwal j
+JOIN guru g ON j.id_guru = g.id_guru
+JOIN mapel m ON j.id_mapel = m.id_mapel
+ORDER BY j.hari, j.jam_mulai;
+
+DROP DATABASE db_sistem_manajemen_sekolah;
+
+TRUNCATE TABLE mapel;
+
+ALTER TABLE nilai DROP COLUMN semester;
+
+ALTER TABLE nilai
+ADD COLUMN semester VARCHAR(10);
+
+SELECT s.id_siswa, s.nama,
+CASE
+WHEN EXISTS (SELECT 1 FROM transaksi t WHERE t.id_siswa = s.id_siswa)
+THEN 'Punya Transaksi'
+ELSE 'Tidak Punya Transaksi'
+END AS status_transaksi
+FROM siswa s;
+
+ALTER TABLE siswa
+ADD COLUMN rata_rata DECIMAL(5,2) DEFAULT 0;
+
+CREATE TABLE transaksi (
+	id_transaksi INT AUTO_INCREMENT PRIMARY KEY,
+	id_siswa INT,
+	tanggal_transaksi DATE,
+	jumlah DECIMAL(10,2),
+	STATUS ENUM('belum dibayar', 'lunas', 'non-aktif', 'pasif', 'aktif') DEFAULT 'belum dibayar',
+	keterangan TEXT,
+	FOREIGN KEY (id_siswa) REFERENCES siswa(id_siswa)
+);
 
